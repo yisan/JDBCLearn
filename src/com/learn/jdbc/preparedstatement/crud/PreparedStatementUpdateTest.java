@@ -104,6 +104,9 @@ public class PreparedStatementUpdateTest {
     public void testCommonUpdate(){
         String sql = "delete from customers where id = ?";
         update(sql,3);
+        //注意 order是关键字，需`order` ，不然报错
+        String sql1 = "update `order` set order_name = ? where order_id = ?";
+        update(sql1,"DD",2);
     }
     // 通用的增删改操作
     public void update(String sql, Object... args) {

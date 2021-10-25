@@ -3,10 +3,7 @@ package com.learn.jdbc.utils;
 import com.learn.jdbc.ConnectionTest;
 
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Properties;
 
 public class JDBCUtils {
@@ -46,6 +43,31 @@ public class JDBCUtils {
         try {
             if (conn != null) {
                 conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public static void close(Connection conn, Statement s, ResultSet rs) {
+        try {
+            if (s != null) {
+                s.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (rs != null) {
+                rs.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
