@@ -1,6 +1,7 @@
 package com.learn.jdbc.bean;
 
-import java.util.Date;
+
+import java.sql.Date;
 
 /**
  * ORM编程思想：object relational mapping)
@@ -13,7 +14,9 @@ public class Customer {
     private String name;
     private String email;
     private Date birth;
-
+    public Customer(){
+        super();
+    }
     public Customer(int id, String name, String email, Date birth) {
         this.id = id;
         this.name = name;
