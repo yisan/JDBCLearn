@@ -100,34 +100,15 @@ public class PreparedStatementUpdateTest {
 
 
     }
+
     @Test
-    public void testCommonUpdate(){
+    public void testCommonUpdate() {
         String sql = "delete from customers where id = ?";
-        update(sql,3);
+        JDBCUtils.update(sql, 3);
         //注意 order是关键字，需`order` ，不然报错
         String sql1 = "update `order` set order_name = ? where order_id = ?";
-        update(sql1,"DD",2);
+        JDBCUtils.update(sql1, "DD", 2);
     }
-    // 通用的增删改操作
-    public void update(String sql, Object... args) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            //1.获取数据库的连接
-            conn = JDBCUtils.getConnection();
-            //2.预编译sql语句，返回PrepareStatement实例
-            ps = conn.prepareStatement(sql);
-            for (int i = 0; i < args.length; i++) {
-                ps.setObject(i+1, args[i]);
-            }
-            //4.执行
-            ps.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            //5.资源关闭
-            JDBCUtils.close(conn, ps);
-        }
 
-    }
+
 }
