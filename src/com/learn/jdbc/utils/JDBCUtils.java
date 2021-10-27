@@ -144,7 +144,53 @@ public class JDBCUtils {
         return 0;
     }
     /**
-     * 针对不同的表的通用的查询操作，返回表中的一条记录
+     * 针对不同的表的通用的查询操作，返回表中的一条记录  -- v1.0 -- 考虑事务
+     *
+     * @param clazz
+     * @param sql
+     * @param args
+     * @param <T>
+     * @return
+     */
+    public static  <T> T getInstance(Connection conn,Class<T> clazz, String sql, Object... args) {
+        ResultSet resultSet = null;
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
+            }
+            resultSet = ps.executeQuery();
+            //获取ResultSet的元数据
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            //通过ResultSetMetaData获取结果集中的列数
+            int columnCount = metaData.getColumnCount();
+            if (resultSet.next()) {
+                T t = clazz.newInstance();
+                //处理结果集一行数据中的每一列
+                for (int i = 0; i < columnCount; i++) {
+                    //获取列值
+                    Object columnValue = resultSet.getObject(i + 1);
+                    //获取每个列的别名
+                    String columnLabel = metaData.getColumnLabel(i + 1);
+                    //通过反射将columnValue 赋值给对象指定的columnName属性
+                    Field field = clazz.getDeclaredField(columnLabel);
+                    //属性修饰符可能为private，这里设置可以访问
+                    field.setAccessible(true);
+                    field.set(t, columnValue);
+                }
+                return t;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(null, ps, resultSet);
+        }
+        return null;
+    }
+    /**
+     * 针对不同的表的通用的查询操作，返回表中的一条记录  -- v1.0 -- 未考虑事务
      *
      * @param clazz
      * @param sql

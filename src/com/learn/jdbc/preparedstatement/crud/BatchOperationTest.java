@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * PreparedStatement批量操作
@@ -32,7 +33,8 @@ public class BatchOperationTest {
         }
     }
 
-    /**批量插入的方式三
+    /**
+     * 批量插入的方式三
      * 1.addBatch() , executeBatch(),clearBatch()
      * 2.mysql服务器默认是关闭批处理的，需要通过一个参数开启
      * ？rewriteBatchedStatements=true 写在配置文件的url后面
@@ -66,7 +68,6 @@ public class BatchOperationTest {
     /**
      * 方式四
      * 设置关闭自动提交，最后统一提交
-     *
      */
     @Test
     public void testInsert3() {

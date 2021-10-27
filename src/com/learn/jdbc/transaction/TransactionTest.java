@@ -51,6 +51,14 @@ public class TransactionTest {
                 e1.printStackTrace();
             }
         }finally {
+            // 恢复默认设置
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             JDBCUtils.close(conn,null);
         }
 
