@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.util.List;
 
-public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
+public class CustomerDAOImpl extends BaseDAO<Customer> implements CustomerDAO {
     @Override
     public void insert(Connection conn, Customer customer) {
         String sql = "insert into customers(name,email,birth)values(?,?,?)";
@@ -28,13 +28,13 @@ public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
     @Override
     public Customer getCustomerById(Connection conn, int id) {
         String sql = "select id,name,email,birth from customers where id = ?";
-        return getInstance(conn, Customer.class, sql, id);
+        return getInstance(conn,sql, id);
     }
 
     @Override
     public List<Customer> getAll(Connection conn) {
         String sql = "select id,name,email,birth from customers";
-        return  getForList(conn, Customer.class, sql);
+        return  getForList(conn, sql);
     }
 
     @Override

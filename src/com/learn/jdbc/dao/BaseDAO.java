@@ -3,6 +3,8 @@ package com.learn.jdbc.dao;
 import com.learn.jdbc.utils.JDBCUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,18 +13,28 @@ import java.util.List;
  * 封装了基本的数据表的通用操作
  * DAO: data(base) access object 数据库访问对象
  */
-public abstract class BaseDAO {
+public abstract class BaseDAO<T> {
+    private Class<T> clazz = null;
+
+    /*
+     * 获取当前BaseDAO的子类继承的父类中的泛型
+     */ {
+        Type genericSuperclass = this.getClass().getGenericSuperclass();
+        ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
+        //获取父类泛型参数
+        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+        //泛型的第一个参数
+        clazz = (Class<T>) actualTypeArguments[0];
+    }
 
     /**
      * 针对不同的表的通用的查询操作，返回表中的一条记录  -- v1.0 -- 考虑事务
      *
-     * @param clazz
      * @param sql
      * @param args
-     * @param <T>
      * @return
      */
-    public static  <T> T getInstance(Connection conn, Class<T> clazz, String sql, Object... args) {
+    public T getInstance(Connection conn, String sql, Object... args) {
         ResultSet resultSet = null;
         PreparedStatement ps = null;
         try {
@@ -63,27 +75,27 @@ public abstract class BaseDAO {
     /**
      * 用于查询特殊值的通用方法
      */
-    public <E> E getValue(Connection conn,String sql,Object ...args){
+    public <E> E getValue(Connection conn, String sql, Object... args) {
         PreparedStatement ps = null;
-        ResultSet rs  = null;
+        ResultSet rs = null;
         try {
             ps = conn.prepareStatement(sql);
-            for (int i=0;i<args.length;i++){
-                ps.setObject(i+1,args[i]);
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
             }
             rs = ps.executeQuery();
-            if (rs.next()){
-                return  (E) rs.getObject(1);
+            if (rs.next()) {
+                return (E) rs.getObject(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            JDBCUtils.close(null,ps,rs);
+        } finally {
+            JDBCUtils.close(null, ps, rs);
         }
         return null;
     }
 
-    public <T> List<T> getForList(Connection conn,Class<T> clazz, String sql, Object... args) {
+    public List<T> getForList(Connection conn, String sql, Object... args) {
         ResultSet resultSet = null;
         PreparedStatement ps = null;
         try {
@@ -122,13 +134,15 @@ public abstract class BaseDAO {
         }
         return null;
     }
+
     /**
      * 通用的增删改操作 -- v2.0 -- 考虑事务操作
+     *
      * @param sql
      * @param args
      * @return
      */
-    public  static int update(Connection conn,String sql, Object... args) {
+    public int update(Connection conn, String sql, Object... args) {
         PreparedStatement ps = null;
         try {
             //1.预编译sql语句，返回PrepareStatement实例
