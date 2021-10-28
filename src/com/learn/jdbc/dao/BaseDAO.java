@@ -9,8 +9,9 @@ import java.util.List;
 
 /**
  * 封装了基本的数据表的通用操作
+ * DAO: data(base) access object 数据库访问对象
  */
-public class BaseDAO {
+public abstract class BaseDAO {
 
     /**
      * 针对不同的表的通用的查询操作，返回表中的一条记录  -- v1.0 -- 考虑事务
