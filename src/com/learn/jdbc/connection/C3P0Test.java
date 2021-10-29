@@ -28,7 +28,6 @@ public class C3P0Test {
      */
     @Test
     public void  testGetConnection1() throws SQLException {
-
         ComboPooledDataSource cpds = new ComboPooledDataSource("helloc3p0");
         Connection conn = cpds.getConnection();
         System.out.println(conn);
